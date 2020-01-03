@@ -77,3 +77,6 @@ form button{
     border-left: 1px solid #333;
     padding: 20px;
 }
+.wrap .right .userBlock{
+    border-bottom: 1px solid #333;
+}
