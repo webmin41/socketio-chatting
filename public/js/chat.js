@@ -7,7 +7,7 @@ const App = {
     username: null,
     socket: null,
 
-    init() {
+    async init() {
         this.socket = io();
         this.bind();
         App.username = this.getUserName();
@@ -28,8 +28,13 @@ const App = {
                 const chatArea = document.getElementById('msg_history');
                 chatArea.scrollTop = chatArea.scrollHeight;
             })
-            .on('user enter', function(username){
+            .on('user enter', function(username, userlist){
                 Message.print(`system: ${username}님이 입장하셨습니다.`);
+                App.showUserList(userlist);
+            })
+            .on('user exit', function(username, userlist){
+                Message.print(`system: ${username}님이 퇴장하셨습니다.`);
+                App.showUserList(userlist);
             })
     
         $('form').addEventListener('submit', Message.send, false);
@@ -50,8 +55,14 @@ const App = {
         return localStorage.getItem('username');
     },
 
-    printUserList(type, username) {
-        const elem = document.createElement("P");
+    showUserList(userlist) {
+        $('#users').innerHTML = '';
+
+        Object.values(userlist).forEach(x => {
+            const elem = document.createElement('li');
+            elem.innerText = x;
+            $('#users').appendChild(elem);
+        })
     }
 
 }
