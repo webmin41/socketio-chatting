@@ -1,41 +1,67 @@
+const $ = document.querySelector.bind(document);
+const $$ = document.querySelectorAll.bind(document);
 
-function printMsg(msg){
-    const html = document.createElement('li');
-    html.innerText = msg;
-    document.getElementById('msg_history').append(html);
-}
+const App = {
 
-if(!localStorage.hasOwnProperty('username')){
+    username: null,
+    socket: null,
+
+    init() {
+        this.socket = io();
+        this.bind();
+        App.username = this.getUserName();
+    },
+
+    bind() {
+        this.socket
+            .on('chat message', function(msg){
+                printMsg(`${localStorage.username} : ${msg}`);
+                const chatArea = document.getElementById('msg_history');
+                chatArea.scrollTop = chatArea.scrollHeight;
+            })
+            .on('user enter', function(){
+                if (localStorage.hasOwnProperty('username')) {
+                    printMsg(`system: ${localStorage.username}님이 입장하셨습니다.`);
+                }
+            })
             
-    const userInput = prompt('유저이름을 적어주세요.');
 
-    if(userInput){
-        localStorage.setItem('username', userInput).trim();
-        socket.emit('new user');
-    }
-    else{
-        document.getElementById('block').style.display = 'flex';
+        $('form').addEventListener('submit', Message.send, false);
+    },
+
+    getUserName() {
+        if(!localStorage.hasOwnProperty('username')){
+            
+            const userInput = prompt('유저이름을 적어주세요.');
+        
+            if(userInput && userInput.trim() !== ''){
+                localStorage.setItem('username', userInput);
+                socket.emit('new user');
+            }
+
+        }
+
+        return localStorage.getItem('username');
     }
 
 }
 
-const socket = io();
-const msgInput = document.getElementById('message');
+const Message = {
 
-document.querySelector('form').addEventListener('submit', function(e){
-    e.preventDefault();
+    send(e) {
+        e.preventDefault();
 
-    socket.emit('chat message', msgInput.value);
-    msgInput.value = '';
-    return false;
-}, false);
+        socket.emit('chat message', msgInput.value);
+        document.querySelector('form').value = '';
+        return false;
+    },
 
-socket.on('chat message', function(msg){
-    printMsg(`${localStorage.username} : ${msg}`);
-})
-
-socket.on('user enter', function(){
-    if (localStorage.hasOwnProperty('username')) {
-        printMsg(`system: ${localStorage.username}님이 입장하셨습니다.`);
+    print() {
+        const html = document.createElement('li');
+        html.innerText = msg;
+        document.getElementById('msg_history').append(html);
     }
-})
+
+}
+
+App.init();

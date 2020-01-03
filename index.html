@@ -6,10 +6,20 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <link rel="stylesheet" href="/static/css/common.css">
+    <!-- <link rel="stylesheet" href="public/css/common.css"> -->
 </head>
 <body>
-    <ul id="msg_history"></ul>
-    <form action="">
+    <div class="wrap">    
+        <div class="left">
+            <ul id="msg_history"></ul>
+        </div>
+        <div class="right">
+            <h3>현재 접속자 목록</h3>
+            <ul id="users"></ul>
+        </div>
+    </div>
+    
+    <form>
         <input type="text" id="message" autocomplete="off">
         <button>SEND</button>
     </form>
