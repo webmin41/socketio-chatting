@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/css/common.css">
+</head>
+<body>
+    <ul id="msg_history"></ul>
+    <form action="">
+        <input type="text" id="message" autocomplete="off">
+        <button>SEND</button>
+    </form>
+
+    <div id="block">
+        <p>유저이름을 가진 사람끼리만 대화할 수 있습니다.</p>
+        <span>F5로 새로고침</span>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

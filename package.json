@@ -1,0 +1,19 @@
+{
+  "name": "livechat",
+  "version": "1.0.0",
+  "description": "socket.io를 이용한 실시간 채팅 구현",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "socket.io",
+    "nodejs"
+  ],
+  "author": "전민기",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
