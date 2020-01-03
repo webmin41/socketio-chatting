@@ -8,9 +8,15 @@ app.use('/static', express.static(__dirname + '/public'));
 
 io.on('connection', function(socket){
 
+    io.emit('user enter');
+
     socket.on('chat message', function(msg){
         io.emit('chat message', msg);
     });
+
+    socket.on('new user', function(){
+        io.emit('user enter');
+    })
 
 })
 
