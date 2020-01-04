@@ -2,7 +2,6 @@ const $ = document.querySelector.bind(document);
 const $$ = document.querySelectorAll.bind(document);
 
 const App = {
-
     randomCode: null,
     username: null,
     socket: null,
@@ -36,8 +35,10 @@ const App = {
                 Message.print(`system: ${username}님이 퇴장하셨습니다.`);
                 App.showUserList(userlist);
             })
+            .on('show typing userlist', App.showTypers)
     
         $('form').addEventListener('submit', Message.send, false);
+        $('input').addEventListener('input', Message.detectTyping)
     },
 
     getUserName() {
@@ -60,21 +61,31 @@ const App = {
 
         Object.values(userlist).forEach(x => {
             const elem = document.createElement('li');
-            elem.innerText = x;
+            elem.innerText = x.username;
             $('#users').appendChild(elem);
         })
-    }
+    },
 
+    showTypers(userlist) {
+        const typers = Object.values(userlist).filter(x => x.is_typing).map(x => x.username);
+
+        const text = typers.join(', ') + '님이 입력중입니다...';
+        $('#typing_indicator').innerText = typers.length ? text : '';
+    }
 }
 
 const Message = {
+    typing: false,
 
     send(e) {
         const msgInput = $('input');
         e.preventDefault();
 
         App.socket.emit('chat message', msgInput.value, App.username);
+        App.socket.emit('change typing status', false);
+
         msgInput.value = '';
+        Message.typing = false;
         return false;
     },
 
@@ -82,8 +93,19 @@ const Message = {
         const html = document.createElement('li');
         html.innerText = msg;
         document.getElementById('msg_history').append(html);
-    }
+    },
 
+    detectTyping(e) {
+        const typingContent = this.value;
+        const was_typing = Message.typing;
+
+        console.log(was_typing, !!typingContent);
+
+        if( (!!typingContent) !== was_typing ){
+            Message.typing = !Message.typing;
+            App.socket.emit('change typing status', Message.typing);
+        }
+    }
 }
 
 App.init();

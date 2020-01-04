@@ -15,9 +15,8 @@ io.on('connection', function(socket){
     socket.on('user enter', function(username){
         user = username;
 
-        users[socket.id] = user;
-
-        io.emit('user enter', username, users);
+        users[socket.id] = {username, is_typing: false};
+        io.emit('user enter', user, users);
     });
 
     socket.on('chat message', function(msg, username){
@@ -27,7 +26,12 @@ io.on('connection', function(socket){
     socket.on('disconnect', function(){
         delete users[socket.id];
         io.emit('user exit', user, users);
-    })
+    });
+
+    socket.on('change typing status', function(status){
+        users[socket.id].is_typing = status;
+        io.emit('show typing userlist', users);
+    });
 
 })
 
